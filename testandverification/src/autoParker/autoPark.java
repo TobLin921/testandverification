@@ -1,12 +1,12 @@
 package autoParker;
 
-public class autoPark {
+public class AutoPark {
 
 	private int[] street = new int[500];
 	private int position;
 	private int consecutiveEmpty;
 	
-	private void init(){
+	private void AutoPark(){
 		position = 0;
 		consecutiveEmpty = 0;
 		
@@ -15,7 +15,7 @@ public class autoPark {
 		}
 	}
 	
-	private PositionStatus moveForward(){
+	public PositionStatus moveForward(){
 		
 		/*
 		This method moves the car 1 meter forward, queries the two infrared
@@ -44,7 +44,7 @@ public class autoPark {
 		
 	}
 	
-	private int isEmpty(){
+	public int isEmpty(){
 		
 		/*
 		This method queries the two ultrasound sensors at least 5 times and filters 
@@ -55,21 +55,26 @@ public class autoPark {
 		from the ultrasound sensors. 
 		*/
 		
+		readSensor(1);
+		
 		return 0;
 	}
-	
-	private void moveBackward(){
+
+	public void moveBackward(){
 		
 		/*
 		The same as above; only it moves the car 1 meter backwards. The car cannot 
 		be moved behind if it is already at the beginning of the street. 
 		*/
+		
 		if(position >=1){
 			position -= 1;
+		}else{
+			throw new IllegalArgumentException("You are at the beginning of the street!");
 		}
 	}
 	
-	private void park(){
+	public void park(){
 		
 		/*
 		It moves the car to the beginning of the current 5 meter free stretch of parking 
@@ -78,34 +83,52 @@ public class autoPark {
 		parallel parking maneuver.
 		*/
 		
-		while(position<=500){
-			if(moveForward().empty == 5){
-				reverse();
+		if(consecutiveEmpty == 5){
+			reverse();
+		}else{
+			while(position<500){
+				if(moveForward().empty == 5){
+					reverse();
+				}
+				
 			}
-			
 		}
 	}
 
-	private void unPark(){
+	public void unPark(){
 		
 		/*
 		It moves the car forward (and to left) to front of the parking place, if it is parked. 
 		*/
 	}
 	
-	private void whereIs(){
+	public void whereIs(){
 		/*
 		This method returns the current position of the car in the street as well as 
 		its situation (whether it is parked or not). 
 		*/
 	}
 	
-	private void reverse() {
+	public void reverse() {
 		//Pre-programmed reverse maneuver.	
+	}
+	
+	public int readSensor(int sensor) {
+		int sensornr = sensor;
+		
+		return 5;
 	}
 	
 	class PositionStatus{
 		int empty = 0;
 		int position = 0;
+	}
+
+	public int getPosition() {
+		return this.position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;	
 	}
 }
