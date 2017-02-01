@@ -2,17 +2,23 @@ package autoParker;
 
 public class AutoPark {
 
-	private int[] street = new int[500];
+	private int[] street;
 	private int position;
 	private int consecutiveEmpty;
+	private boolean isParked;
 	
-	private void AutoPark(){
+	public AutoPark(){
+		street = new int[500];
 		position = 0;
 		consecutiveEmpty = 0;
-		
-		for(int i=0;i<500;i++){
-			street[i] = i+1;
-		}
+		isParked = false;
+	}
+	
+	public AutoPark(int position, int empty){
+		street = new int[500];
+		this.position = position;
+		this.consecutiveEmpty = empty;
+		isParked = false;
 	}
 	
 	public PositionStatus moveForward(){
@@ -40,8 +46,7 @@ public class AutoPark {
 			return positionStatus;
 		}else{
 			throw new IllegalArgumentException("Car is at the end of the street!");
-		}
-		
+		}		
 	}
 	
 	public int isEmpty(){
@@ -71,6 +76,7 @@ public class AutoPark {
 			position -= 1;
 		}else{
 			throw new IllegalArgumentException("You are at the beginning of the street!");
+			
 		}
 	}
 	
@@ -85,10 +91,12 @@ public class AutoPark {
 		
 		if(consecutiveEmpty == 5){
 			reverse();
+			isParked = true;
 		}else{
 			while(position<500){
 				if(moveForward().empty == 5){
 					reverse();
+					isParked = true;
 				}
 				
 			}
@@ -100,6 +108,11 @@ public class AutoPark {
 		/*
 		It moves the car forward (and to left) to front of the parking place, if it is parked. 
 		*/
+		if(isParked == true){
+			isParked = false;
+		}else{
+			throw new IllegalArgumentException("Car is not parked!");
+		}
 	}
 	
 	public void whereIs(){
@@ -130,5 +143,21 @@ public class AutoPark {
 
 	public void setPosition(int position) {
 		this.position = position;	
+	}
+	
+	public class IllegalActionException extends Exception{
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public IllegalActionException(){
+			
+		}
+		
+		public IllegalActionException(String string){
+			super(string);
+		}
 	}
 }
