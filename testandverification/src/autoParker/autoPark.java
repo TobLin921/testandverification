@@ -15,7 +15,7 @@ public class autoPark {
 		}
 	}
 	
-	private void moveForward(){
+	private PositionStatus moveForward(){
 		
 		/*
 		This method moves the car 1 meter forward, queries the two infrared
@@ -25,12 +25,21 @@ public class autoPark {
 		beyond the end of the street. 
 		*/
 		
-		position += 1;
-		
-		if(isEmpty() >= 3){
-			consecutiveEmpty += 1;
+		if(position<500){
+			PositionStatus positionStatus = new PositionStatus();
+			position += 1;
+			positionStatus.position = position;
+			
+			if(isEmpty() >= 3){
+				consecutiveEmpty += 1;
+			}else{
+				consecutiveEmpty = 0;
+			}
+			positionStatus.empty = consecutiveEmpty;
+			
+			return positionStatus;
 		}else{
-			consecutiveEmpty = 0;
+			throw new IllegalArgumentException("Car is at the end of the street!");
 		}
 		
 	}
@@ -55,6 +64,9 @@ public class autoPark {
 		The same as above; only it moves the car 1 meter backwards. The car cannot 
 		be moved behind if it is already at the beginning of the street. 
 		*/
+		if(position >=1){
+			position -= 1;
+		}
 	}
 	
 	private void park(){
@@ -65,8 +77,15 @@ public class autoPark {
 		street until such a stretch is detected. Then it performs a pre-programmed reverse 
 		parallel parking maneuver.
 		*/
+		
+		while(position<=500){
+			if(moveForward().empty == 5){
+				reverse();
+			}
+			
+		}
 	}
-	
+
 	private void unPark(){
 		
 		/*
@@ -79,5 +98,14 @@ public class autoPark {
 		This method returns the current position of the car in the street as well as 
 		its situation (whether it is parked or not). 
 		*/
+	}
+	
+	private void reverse() {
+		//Pre-programmed reverse maneuver.	
+	}
+	
+	class PositionStatus{
+		int empty = 0;
+		int position = 0;
 	}
 }
