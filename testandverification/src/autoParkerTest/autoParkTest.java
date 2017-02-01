@@ -3,6 +3,7 @@ package autoParkerTest;
 import org.junit.Test;
 
 import autoParker.AutoPark;
+import autoParker.AutoPark.IllegalActionException;
 import junit.framework.Assert;
 
 public class AutoParkTest {
@@ -14,16 +15,16 @@ public class AutoParkTest {
 		Assert.assertEquals(1, autoPark.getPosition(), 0);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=ArrayIndexOutOfBoundsException.class)
 	public void testEndofStreet(){
 		AutoPark autoPark = new AutoPark();
 		autoPark.setPosition(500);
 		autoPark.moveForward();		
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=ArrayIndexOutOfBoundsException.class)
 	public void testBeginningofStreet(){
 		AutoPark autoPark = new AutoPark();
-		autoPark.moveBackward();
+		autoPark.moveBackward();		
 	}
 }

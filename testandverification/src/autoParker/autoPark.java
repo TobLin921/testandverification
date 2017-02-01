@@ -1,20 +1,22 @@
 package autoParker;
 
+import autoParker.AutoPark.IllegalActionException;
+
 public class AutoPark {
 
 	private int[] street;
 	private int position;
-	private int consecutiveEmpty;
+	private boolean consecutiveEmpty;
 	private boolean isParked;
 	
 	public AutoPark(){
 		street = new int[500];
 		position = 0;
-		consecutiveEmpty = 0;
+		consecutiveEmpty = false;
 		isParked = false;
 	}
 	
-	public AutoPark(int position, int empty){
+	public AutoPark(int position, boolean empty){
 		street = new int[500];
 		this.position = position;
 		this.consecutiveEmpty = empty;
@@ -31,22 +33,12 @@ public class AutoPark {
 		beyond the end of the street. 
 		*/
 		
-		if(position<500){
-			PositionStatus positionStatus = new PositionStatus();
-			position += 1;
-			positionStatus.position = position;
-			
-			if(isEmpty() >= 3){
-				consecutiveEmpty += 1;
-			}else{
-				consecutiveEmpty = 0;
-			}
-			positionStatus.empty = consecutiveEmpty;
-			
-			return positionStatus;
-		}else{
-			throw new IllegalArgumentException("Car is at the end of the street!");
-		}		
+		PositionStatus positionStatus = new PositionStatus();
+		street[position+1] = isEmpty();
+		position += 1;
+		positionStatus.position = position;
+		positionStatus.empty = checkIfEmpty(positionStatus.position);		
+		return positionStatus;	
 	}
 	
 	public int isEmpty(){
@@ -65,21 +57,22 @@ public class AutoPark {
 		return 0;
 	}
 
-	public void moveBackward(){
+	public PositionStatus moveBackward(){
 		
 		/*
 		The same as above; only it moves the car 1 meter backwards. The car cannot 
 		be moved behind if it is already at the beginning of the street. 
 		*/
 		
-		if(position >=1){
-			position -= 1;
-		}else{
-			throw new IllegalArgumentException("You are at the beginning of the street!");
-			
-		}
+		PositionStatus positionStatus = new PositionStatus();
+		street[position-1] = isEmpty();
+		position -= 1;
+		positionStatus.position = position;
+		positionStatus.empty = checkIfEmpty(positionStatus.position);		
+		return positionStatus;	
+		
 	}
-	
+
 	public void park(){
 		
 		/*
@@ -89,12 +82,12 @@ public class AutoPark {
 		parallel parking maneuver.
 		*/
 		
-		if(consecutiveEmpty == 5){
+		if(consecutiveEmpty == true){
 			reverse();
 			isParked = true;
 		}else{
 			while(position<500){
-				if(moveForward().empty == 5){
+				if(moveForward().empty == true){
 					reverse();
 					isParked = true;
 				}
@@ -110,9 +103,8 @@ public class AutoPark {
 		*/
 		if(isParked == true){
 			isParked = false;
-		}else{
-			throw new IllegalArgumentException("Car is not parked!");
-		}
+		}else
+			System.err.print("Car is already parked!");
 	}
 	
 	public void whereIs(){
@@ -133,7 +125,7 @@ public class AutoPark {
 	}
 	
 	class PositionStatus{
-		int empty = 0;
+		boolean empty = false;
 		int position = 0;
 	}
 
@@ -143,6 +135,21 @@ public class AutoPark {
 
 	public void setPosition(int position) {
 		this.position = position;	
+	}
+	
+	private boolean checkIfEmpty(int position) {
+		int consecutiveEmpty = 0;
+		
+		for(int i=position;i<position-5;i--){
+			if(street[position-1]>=3){
+				consecutiveEmpty += 1;
+			}
+		}
+		if(consecutiveEmpty == 5){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	public class IllegalActionException extends Exception{
