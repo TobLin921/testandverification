@@ -229,7 +229,7 @@ public class AutoParkTest {
         autoPark.setPosition(100);
         autoPark.setParked(false);
         autoPark.unPark();
-        Assert.assertTrue(100, autoPark.getPosition());
+        Assert.assertEquals(100, autoPark.getPosition());
         Assert.assertFalse(autoPark.getParked());
     }
 
