@@ -4,13 +4,13 @@ import autoParker.AutoParkImpl.PositionStatus;
 
 public interface IAutoPark {
 
-	public PositionStatus moveForward(PositionStatus positionStatus);
+	public PositionStatus moveForward();
 	
 	public int isEmpty();
 	
-	public PositionStatus moveBackward(PositionStatus positionStatus);
+	public PositionStatus moveBackward();
 	
-	public void park(PositionStatus positonStatus);
+	public void park();
 	
 	public void unPark();
 	

@@ -6,7 +6,7 @@ public class AutoParkImpl implements IAutoPark {
 	//private int position;
 	//private boolean consecutiveEmpty;
 	private boolean isParked;
-	private PositionStatus positionStatus;
+	private PositionStatus positionStatus = new PositionStatus();
 	
 	public AutoParkImpl(){
 		street = new int[500];
@@ -26,7 +26,7 @@ public class AutoParkImpl implements IAutoPark {
 		positionStatus.position = position-1;
 	}
 	
-	public PositionStatus moveForward(PositionStatus positionStatus){
+	public PositionStatus moveForward(){
 		
 		/*
 		This method moves the car 1 meter forward, queries the two infrared
@@ -58,7 +58,7 @@ public class AutoParkImpl implements IAutoPark {
 		return 0;
 	}
 
-	public PositionStatus moveBackward(PositionStatus positionStatus){
+	public PositionStatus moveBackward(){
 		
 		/*
 		The same as above; only it moves the car 1 meter backwards. The car cannot 
@@ -72,7 +72,7 @@ public class AutoParkImpl implements IAutoPark {
 		
 	}
 
-	public void park(PositionStatus positionStatus){
+	public void park(){
 		
 		/*
 		It moves the car to the beginning of the current 5 meter free stretch of parking 
@@ -86,7 +86,7 @@ public class AutoParkImpl implements IAutoPark {
 			isParked = true;
 		}else{
 			while(positionStatus.position<500){
-				if(moveForward(positionStatus).empty == true){
+				if(moveForward().empty == true){
 					reverse();
 					isParked = true;
 				}
