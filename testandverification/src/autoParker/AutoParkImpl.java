@@ -6,16 +6,19 @@ public class AutoParkImpl implements IAutoPark {
 	//private int position;
 	//private boolean consecutiveEmpty;
 	private boolean isParked;
+	private boolean useSensors;
 	private PositionStatus positionStatus = new PositionStatus();
 	private TestSensor sensorFront = new TestSensor();
 	private TestSensor sensorBack = new TestSensor();
 	private final int ACCEPTABLE_DEVIATION = 5;
+	
 	
 	public AutoParkImpl(){
 		street = new int[500];
 		//position = 0;
 		//consecutiveEmpty = false;
 		isParked = false;
+		useSensors = true;
 		positionStatus.empty = false;
 		positionStatus.position = 0;
 		int[] defaultValues = {0, 0, 0, 0, 0};
@@ -29,6 +32,7 @@ public class AutoParkImpl implements IAutoPark {
 		//this.position = position;
 		//this.consecutiveEmpty = empty;
 		isParked = false;
+		useSensors = true;
 		positionStatus.empty = empty;
 		positionStatus.position = position-1;
 	}
@@ -44,7 +48,9 @@ public class AutoParkImpl implements IAutoPark {
 		*/
 		
 		if(isParked == false){
-			street[positionStatus.position+1] = isEmpty(sensorFront, sensorBack);
+			if(useSensors == true){
+				street[positionStatus.position+1] = isEmpty(sensorFront, sensorBack);
+			}
 			positionStatus.position += 1;
 			positionStatus.empty = checkIfEmpty(positionStatus.position);
 			return positionStatus;
@@ -119,7 +125,9 @@ public class AutoParkImpl implements IAutoPark {
 		be moved behind if it is already at the beginning of the street. 
 		*/
 		if(isParked == false){
+			if(useSensors == true){
 			street[positionStatus.position-1] = isEmpty(sensorFront, sensorBack);
+			}
 			positionStatus.position -= 1;
 			positionStatus.empty = checkIfEmpty(positionStatus.position);		
 			return positionStatus;
@@ -136,12 +144,14 @@ public class AutoParkImpl implements IAutoPark {
 		street until such a stretch is detected. Then it performs a pre-programmed reverse 
 		parallel parking maneuver.
 		*/
+		
 		if(isParked == false){
 			if(positionStatus.empty == true){
 				reverse();
 				isParked = true;
 			}else if(isParked == false){
 				while(positionStatus.position<499 && isParked == false){
+					System.out.print("\n \n Testing position" + positionStatus.position + "\n\nvalue is  " + getStreetValue(positionStatus.position));
 					if(moveForward().empty == true){
 						reverse();
 						isParked = true;
@@ -260,6 +270,10 @@ public class AutoParkImpl implements IAutoPark {
 
 	public boolean getParked() {
 		return isParked;
+	}
+	
+	public void setUseSensors(boolean b){
+		useSensors = b;
 	}
 	
 	/*

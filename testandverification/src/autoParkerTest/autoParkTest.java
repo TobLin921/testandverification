@@ -168,17 +168,43 @@ public class AutoParkTest {
 	@Test
 	public void testParkForwardSpot(){
 		AutoParkImpl autoPark = new AutoParkImpl();
+		autoPark.setUseSensors(false);
 		autoPark.setPosition(50);
 		int currentPos = autoPark.getPosition();
-		autoPark.setStreetValue(currentPos+50, 5);
-		autoPark.setStreetValue(currentPos+51, 7);
-		autoPark.setStreetValue(currentPos+52, 5);
-		autoPark.setStreetValue(currentPos+53, 10);
-		autoPark.setStreetValue(currentPos+54, 12);
+		autoPark.setStreetValue(100, 5);
+		autoPark.setStreetValue(101, 7);
+		autoPark.setStreetValue(102, 5);
+		autoPark.setStreetValue(103, 10);
+		autoPark.setStreetValue(104, 12);
 		autoPark.park();
 		Assert.assertTrue(autoPark.getParked());
 	}
+	
+	@Test
+	public void testParkWhenParked(){
+		AutoParkImpl autoPark = new AutoParkImpl();
+		autoPark.setParked(true);
+		autoPark.setPosition(100);
+		int positionBefore = autoPark.getPosition();
+		autoPark.park();
+		int positionAfter = autoPark.getPosition();
+		Assert.assertEquals(positionBefore, positionAfter);
+	}
+	
+	@Test
+	public void testParkWhenUnderFour(){
+		AutoParkImpl autoPark = new AutoParkImpl();
+		autoPark.setPosition(2);
+		autoPark.park();
+		Assert.assertFalse(autoPark.getParked());
+	}
 
+	/*
+	 * --------------------------------------------------
+	 * UNPARK
+	 * --------------------------------------------------
+	 */
+	
 	@Test
     public void testUnPark(){
         AutoParkImpl autoPark = new AutoParkImpl();
