@@ -213,6 +213,7 @@ public class AutoParkTest {
 	 * --------------------------------------------------
 	 */
 
+    @Test
     public void testWhereIs(){
         AutoParkImpl autoPark = new AutoParkImpl();
         autoPark.setPosition(250);
