@@ -224,9 +224,25 @@ public class AutoParkTest {
     }
 
     @Test
-    public void testUnParkWhenNotParked(){
+    public void testUnParkWhenNotParked() {
         AutoParkImpl autoPark = new AutoParkImpl();
         autoPark.setPosition(100);
         autoPark.setParked(false);
+        autoPark.unPark();
+        Assert.assertTrue(100, autoPark.getPosition());
+        Assert.assertFalse(autoPark.getParked());
+    }
+
+    /*
+	 * --------------------------------------------------
+	 * Where is car (position)
+	 * --------------------------------------------------
+	 */
+
+    @Test
+    public void testWhereIs(){
+        AutoParkImpl autoPark = new AutoParkImpl();
+        autoPark.setPosition(250);
+        Assert.assertEquals(250,autoPark.whereIs());
     }
 }
