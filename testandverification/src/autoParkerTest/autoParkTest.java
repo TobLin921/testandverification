@@ -11,13 +11,24 @@ public class AutoParkTest {
 	public void testForward(){
 		AutoParkImpl autoPark = new AutoParkImpl();
 		autoPark.moveForward();
-		Assert.assertEquals(1, autoPark.getPosition(), 0);
+		Assert.assertEquals(1, autoPark.getPosition());
 	}
 	
 	@Test(expected=ArrayIndexOutOfBoundsException.class)
 	public void testEndofStreet(){
 		AutoParkImpl autoPark = new AutoParkImpl(500, false);
 		autoPark.moveForward();		
+	}
+	
+	@Test
+	public void testForwardSensorChange(){
+		AutoParkImpl autoPark = new AutoParkImpl();
+		int valueBefore = autoPark.getPosition();
+		int[] readings = {2, 2, 2, 2, 2};
+		autoPark.setSensorValues(1, readings);
+		autoPark.setSensorValues(2, readings);
+		autoPark.moveForward();
+		Assert.assertNotSame(autoPark.getPosition(), valueBefore);
 	}
 	
 	@Test(expected=ArrayIndexOutOfBoundsException.class)

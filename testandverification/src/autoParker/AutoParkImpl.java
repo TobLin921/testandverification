@@ -7,6 +7,9 @@ public class AutoParkImpl implements IAutoPark {
 	//private boolean consecutiveEmpty;
 	private boolean isParked;
 	private PositionStatus positionStatus = new PositionStatus();
+	private TestSensor sensorFront = new TestSensor();
+	private TestSensor sensorBack = new TestSensor();
+	private final int ACCEPTABLE_DEVIATION = 5;
 	
 	public AutoParkImpl(){
 		street = new int[500];
@@ -15,6 +18,10 @@ public class AutoParkImpl implements IAutoPark {
 		isParked = false;
 		positionStatus.empty = false;
 		positionStatus.position = 0;
+		int[] defaultValues = {0, 0, 0, 0, 0};
+		sensorFront.prepare(defaultValues);
+		sensorBack.prepare(defaultValues);
+		
 	}
 	
 	public AutoParkImpl(int position, boolean empty){
@@ -35,14 +42,19 @@ public class AutoParkImpl implements IAutoPark {
 		of the detected parking places up to now. The car cannot be moved forward
 		beyond the end of the street. 
 		*/
-	
-		street[positionStatus.position+1] = isEmpty();
-		positionStatus.position += 1;
-		positionStatus.empty = checkIfEmpty(positionStatus.position);		
-		return positionStatus;	
+		
+		if(isParked == false){
+			street[positionStatus.position+1] = isEmpty(sensorFront, sensorBack);
+			positionStatus.position += 1;
+			positionStatus.empty = checkIfEmpty(positionStatus.position);		
+			return positionStatus;
+		}else{
+			System.err.print("Car can not move because it is parked.");
+			return null;
+		}
 	}
 	
-	public int isEmpty(){
+	public int isEmpty(ISensor sensor1, ISensor sensor2){
 		
 		/*
 		This method queries the two ultrasound sensors at least 5 times and filters 
@@ -53,9 +65,52 @@ public class AutoParkImpl implements IAutoPark {
 		from the ultrasound sensors. 
 		*/
 		
-		readSensor(1);
+		int[] sensorReadings1 = {sensor1.record(), sensor1.record(), 
+		                         sensor1.record(), sensor1.record(), sensor1.record()}; 
+		                         
+		int[] sensorReadings2 = {sensor2.record(), sensor2.record(), 
+                				 sensor2.record(), sensor2.record(), sensor2.record()};
+        
+		int [] combinedReadings = new int[sensorReadings1.length+sensorReadings2.length];
+		System.arraycopy( sensorReadings1, 0, combinedReadings, 0, sensorReadings1.length);
+		System.arraycopy( sensorReadings2, 0, combinedReadings, sensorReadings1.length, sensorReadings2.length );
 		
-		return 0;
+		
+		if(getDeviation(sensorReadings1) > ACCEPTABLE_DEVIATION  && 
+				getDeviation(sensorReadings2) <= ACCEPTABLE_DEVIATION){
+			return getAverage(sensorReadings2);
+		}else if(getDeviation(sensorReadings1) <= ACCEPTABLE_DEVIATION && 
+				getDeviation(sensorReadings2) > ACCEPTABLE_DEVIATION){
+			return getAverage(sensorReadings1);
+		}else if(getDeviation(sensorReadings1) <= ACCEPTABLE_DEVIATION && 
+				getDeviation(sensorReadings2) <= ACCEPTABLE_DEVIATION){
+			return getAverage(combinedReadings);
+		}else{
+			return -1;
+		}
+	}
+
+	private int getAverage(int[] array) {
+		
+		int sensorSum = 0;
+		
+		for(int i:array){
+			sensorSum += array[i];
+		}
+		int totalAverage = 0;
+		totalAverage = sensorSum/array.length;
+		return totalAverage;
+	}
+
+	private int getDeviation(int[] array) {
+		
+		int deviationSum = 0;
+		for(int i:array){
+			deviationSum += (int)Math.pow((array[i]-getAverage(array)), 2);
+		}
+		int deviation = (int)Math.sqrt(deviationSum/array.length);
+		
+		return deviation;
 	}
 
 	public PositionStatus moveBackward(){
@@ -65,7 +120,9 @@ public class AutoParkImpl implements IAutoPark {
 		be moved behind if it is already at the beginning of the street. 
 		*/
 		
-		street[positionStatus.position-1] = isEmpty();
+		TestSensor sensor1 = new TestSensor();
+		TestSensor sensor2 = new TestSensor();
+		street[positionStatus.position-1] = isEmpty(sensor1, sensor2);
 		positionStatus.position -= 1;
 		positionStatus.empty = checkIfEmpty(positionStatus.position);		
 		return positionStatus;
@@ -80,18 +137,23 @@ public class AutoParkImpl implements IAutoPark {
 		street until such a stretch is detected. Then it performs a pre-programmed reverse 
 		parallel parking maneuver.
 		*/
-		
-		if(positionStatus.empty == true){
-			reverse();
-			isParked = true;
-		}else{
-			while(positionStatus.position<500){
-				if(moveForward().empty == true){
-					reverse();
-					isParked = true;
+		if(isParked == false){
+			if(positionStatus.empty == true){
+				reverse();
+				isParked = true;
+			}else{
+				while(positionStatus.position<500){
+					if(moveForward().empty == true){
+						reverse();
+						isParked = true;
+					}
 				}
-				
+				if(isParked == false){
+					System.err.print("There are no possible places to park.");
+				}
 			}
+		}else{
+			System.err.print("Car is already parked.");
 		}
 	}
 
@@ -103,31 +165,56 @@ public class AutoParkImpl implements IAutoPark {
 		if(isParked == true){
 			isParked = false;
 		}else
-			System.err.print("Car is already parked!");
+			System.err.print("Car is not parked already.");
 	}
 	
-	public void whereIs(){
+	public int whereIs(){
 		/*
 		This method returns the current position of the car in the street as well as 
 		its situation (whether it is parked or not). 
 		*/
+		
+		return positionStatus.position;
 	}
 	
 	public void reverse() {
 		//Pre-programmed reverse maneuver.	
 	}
 	
-	public int readSensor(int sensor) {
-		int sensornr = sensor;
-		
-		return 5;
-	}
-	
 	class PositionStatus{
 		boolean empty = false;
 		int position = 0;
 	}
+	
+	class TestSensor implements ISensor{
+		
+		int[] sensorReadings = {0, 0, 0, 0, 0};
+		int i = 0;
+		
+		public void prepare(int[] sensorReadings){
+			i = 0;
+			this.sensorReadings = sensorReadings;
+		}
+		
+		public int record(){
+			int tmp = sensorReadings[i];
+			if(i <= 3){
+				i++;
+			}else{
+				i = 0;
+			}
+			return tmp;
+		}
+	}
 
+	public void setSensorValues(int sensor, int[] sensorValues){
+		if(sensor == 1){
+			sensorFront.prepare(sensorValues);
+		}else if(sensor == 2){
+			sensorBack.prepare(sensorValues);
+		}
+	}
+	
 	public int getPosition() {
 		return this.positionStatus.position;
 	}
@@ -143,23 +230,26 @@ public class AutoParkImpl implements IAutoPark {
 	private boolean checkIfEmpty(int position) {
 		int consecutiveEmpty = 0;
 		
-		for(int i=position;i<position-5;i--){
-			if(street[position-1]>=3){
-				consecutiveEmpty += 1;
-			}
-		}
-		if(consecutiveEmpty == 5){
-			return true;
-		}else{
+		if(position <= 4){
 			return false;
+		}else{
+			for(int i=position;i>position-5;i--){
+				if(street[i]>=3){
+					consecutiveEmpty += 1;
+				}
+			}
+			if(consecutiveEmpty == 5){
+				return true;
+			}else{
+				return false;
+			}
 		}
 	}
 	
+	/*
 	public class IllegalActionException extends Exception{
 		
-		/**
-		 * 
-		 */
+		
 		private static final long serialVersionUID = 1L;
 
 		public IllegalActionException(){
@@ -170,4 +260,5 @@ public class AutoParkImpl implements IAutoPark {
 			super(string);
 		}
 	}
+	*/
 }

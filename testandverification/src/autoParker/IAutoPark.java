@@ -6,7 +6,7 @@ public interface IAutoPark {
 
 	public PositionStatus moveForward();
 	
-	public int isEmpty();
+	public int isEmpty(ISensor sensor1, ISensor sensor2);
 	
 	public PositionStatus moveBackward();
 	
@@ -14,5 +14,5 @@ public interface IAutoPark {
 	
 	public void unPark();
 	
-	public void whereIs();
+	public int whereIs();
 }
