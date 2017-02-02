@@ -34,8 +34,11 @@ public class AutoParkTest {
 	@Test
 	public void testForwardParked(){
 		AutoParkImpl autoPark = new AutoParkImpl();
+		int positionBefore = autoPark.getPosition();
 		autoPark.setParked(true);
-		
+		autoPark.moveForward();
+		int positionAfter = autoPark.getPosition();
+		Assert.assertEquals(positionBefore, positionAfter);
 	}
 	
 	@Test(expected=ArrayIndexOutOfBoundsException.class)

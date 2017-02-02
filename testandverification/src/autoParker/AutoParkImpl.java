@@ -50,7 +50,7 @@ public class AutoParkImpl implements IAutoPark {
 			return positionStatus;
 		}else{
 			System.err.print("Car can not move because it is parked.");
-			return null;
+			return positionStatus;
 		}
 	}
 	
