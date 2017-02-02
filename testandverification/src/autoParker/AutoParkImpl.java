@@ -49,7 +49,6 @@ public class AutoParkImpl implements IAutoPark {
 			positionStatus.empty = checkIfEmpty(positionStatus.position);		
 			return positionStatus;
 		}else{
-			System.err.print("Car can not move because it is parked.");
 			return positionStatus;
 		}
 	}
@@ -95,7 +94,7 @@ public class AutoParkImpl implements IAutoPark {
 		int sensorSum = 0;
 		
 		for(int i:array){
-			sensorSum += array[i];
+			sensorSum += i;
 		}
 		int totalAverage = 0;
 		totalAverage = sensorSum/array.length;
@@ -106,7 +105,7 @@ public class AutoParkImpl implements IAutoPark {
 		
 		int deviationSum = 0;
 		for(int i:array){
-			deviationSum += (int)Math.pow((array[i]-getAverage(array)), 2);
+			deviationSum += (int)Math.pow((i-getAverage(array)), 2);
 		}
 		int deviation = (int)Math.sqrt(deviationSum/array.length);
 		
@@ -119,14 +118,14 @@ public class AutoParkImpl implements IAutoPark {
 		The same as above; only it moves the car 1 meter backwards. The car cannot 
 		be moved behind if it is already at the beginning of the street. 
 		*/
-		
-		TestSensor sensor1 = new TestSensor();
-		TestSensor sensor2 = new TestSensor();
-		street[positionStatus.position-1] = isEmpty(sensor1, sensor2);
-		positionStatus.position -= 1;
-		positionStatus.empty = checkIfEmpty(positionStatus.position);		
-		return positionStatus;
-		
+		if(isParked == false){
+			street[positionStatus.position-1] = isEmpty(sensorFront, sensorBack);
+			positionStatus.position -= 1;
+			positionStatus.empty = checkIfEmpty(positionStatus.position);		
+			return positionStatus;
+		}else{
+			return positionStatus;
+		}
 	}
 
 	public void park(){
@@ -142,7 +141,7 @@ public class AutoParkImpl implements IAutoPark {
 				reverse();
 				isParked = true;
 			}else{
-				while(positionStatus.position<500){
+				while(positionStatus.position<499){
 					if(moveForward().empty == true){
 						reverse();
 						isParked = true;
@@ -249,6 +248,18 @@ public class AutoParkImpl implements IAutoPark {
 	public void setParked(boolean b) {
 		this.isParked = b;
 		
+	}
+
+	public int getStreetValue(int position) {
+		return street[position];
+	}
+
+	public void setStreetValue(int position, int value) {
+		street[position] = value;
+	}
+
+	public boolean getParked() {
+		return isParked;
 	}
 	
 	/*
