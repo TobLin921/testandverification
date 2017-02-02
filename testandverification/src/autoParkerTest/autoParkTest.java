@@ -31,6 +31,13 @@ public class AutoParkTest {
 		Assert.assertNotSame(autoPark.getPosition(), valueBefore);
 	}
 	
+	@Test
+	public void testForwardParked(){
+		AutoParkImpl autoPark = new AutoParkImpl();
+		autoPark.setParked(true);
+		
+	}
+	
 	@Test(expected=ArrayIndexOutOfBoundsException.class)
 	public void testBeginningofStreet(){
 		AutoParkImpl autoPark = new AutoParkImpl();

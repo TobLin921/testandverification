@@ -245,6 +245,11 @@ public class AutoParkImpl implements IAutoPark {
 			}
 		}
 	}
+
+	public void setParked(boolean b) {
+		this.isParked = b;
+		
+	}
 	
 	/*
 	public class IllegalActionException extends Exception{
