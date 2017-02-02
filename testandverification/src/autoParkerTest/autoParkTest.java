@@ -181,4 +181,8 @@ public class AutoParkTest {
         autoPark.setPostition(100);
         autoPark.setParked(false);
     }
+
+
+
+
 }
