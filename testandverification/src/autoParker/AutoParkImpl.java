@@ -46,7 +46,8 @@ public class AutoParkImpl implements IAutoPark {
 		if(isParked == false){
 			street[positionStatus.position+1] = isEmpty(sensorFront, sensorBack);
 			positionStatus.position += 1;
-			positionStatus.empty = checkIfEmpty(positionStatus.position);		
+			positionStatus.empty = checkIfEmpty(positionStatus.position);
+			System.out.print("position empty set.\n\n");
 			return positionStatus;
 		}else{
 			return positionStatus;
@@ -140,8 +141,8 @@ public class AutoParkImpl implements IAutoPark {
 			if(positionStatus.empty == true){
 				reverse();
 				isParked = true;
-			}else{
-				while(positionStatus.position<499){
+			}else if(isParked == false){
+				while(positionStatus.position<500 && isParked == false){
 					if(moveForward().empty == true){
 						reverse();
 						isParked = true;
@@ -230,16 +231,22 @@ public class AutoParkImpl implements IAutoPark {
 		int consecutiveEmpty = 0;
 		
 		if(position <= 4){
+			System.out.print("\nYOU ARE ON POSITION 4 OR UNDER!\n\n");
 			return false;
 		}else{
-			for(int i=position;i>position-5;i--){
+			System.out.print("VALID POSITION!\n\n");
+			for(int i=position-1;i>position-6;i--){
+				System.out.print("LOOKING AT POSITION " + i + ". looking at value" + street[i] + "\n\n");
 				if(street[i]>=3){
+					System.out.print("FOUND A SPOT\n\n");
 					consecutiveEmpty += 1;
 				}
 			}
 			if(consecutiveEmpty == 5){
+				System.out.print("YOU GOT A SPOT \n\n");
 				return true;
 			}else{
+				System.out.print("NO SPOT HERE");
 				return false;
 			}
 		}
