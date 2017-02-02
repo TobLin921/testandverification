@@ -178,4 +178,29 @@ public class AutoParkTest {
 		autoPark.park();
 		Assert.assertTrue(autoPark.getParked());
 	}
+
+	@Test
+    public void testUnPark(){
+        AutoParkImpl autoPark = new AutoParkImpl();
+        autoPark.setPosition(100);
+        autoPark.setParked(true);
+        autoPark.unPark();
+        Assert.assertFalse(autoPark.getParked());
+    }
+
+    @Test
+    public void testUnParkPersistantPos(){  //CHECK ME!
+        AutoParkImpl autoPark = new AutoParkImpl();
+        autoPark.setPosition(100);
+        autoPark.setParked(true);
+        autoPark.unPark();
+        Assert.assertEquals(100, autoPark.getPosition());
+    }
+
+    @Test
+    public void testUnParkWhenNotParked(){
+        AutoParkImpl autoPark = new AutoParkImpl();
+        autoPark.setPosition(100);
+        autoPark.setParked(false);
+    }
 }
