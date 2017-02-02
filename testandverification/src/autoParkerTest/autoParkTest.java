@@ -156,4 +156,26 @@ public class AutoParkTest {
 		autoPark.park();
 		Assert.assertTrue(autoPark.getParked());
 	}
+	
+	@Test
+	public void testParkWithNoSpot(){
+		AutoParkImpl autoPark = new AutoParkImpl();
+		autoPark.setPosition(50);
+		autoPark.park();
+		Assert.assertFalse(autoPark.getParked());
+	}
+	
+	@Test
+	public void testParkForwardSpot(){
+		AutoParkImpl autoPark = new AutoParkImpl();
+		autoPark.setPosition(50);
+		int currentPos = autoPark.getPosition();
+		autoPark.setStreetValue(currentPos+50, 5);
+		autoPark.setStreetValue(currentPos+51, 7);
+		autoPark.setStreetValue(currentPos+52, 5);
+		autoPark.setStreetValue(currentPos+53, 10);
+		autoPark.setStreetValue(currentPos+54, 12);
+		autoPark.park();
+		Assert.assertTrue(autoPark.getParked());
+	}
 }
