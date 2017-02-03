@@ -100,7 +100,7 @@ public interface IAutoPark {
 	
 	
 	/*
-	 * public int whereIs();
+	 * public PositionStatus whereIs();
 	
 	Description: Returns the current position of the car.
 

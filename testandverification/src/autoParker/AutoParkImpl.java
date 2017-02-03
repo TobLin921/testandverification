@@ -3,7 +3,7 @@ package autoParker;
 public class AutoParkImpl implements IAutoPark {
 
 	private int[] street;
-	private boolean isParked;
+	//private boolean isParked;
 	private boolean useSensors;
 	private PositionStatus positionStatus = new PositionStatus();
 	private TestSensor sensorFront = new TestSensor();
@@ -13,7 +13,7 @@ public class AutoParkImpl implements IAutoPark {
 	
 	public AutoParkImpl(){
 		street = new int[500];
-		isParked = false;
+		//isParked = false;
 		useSensors = true;
 		positionStatus.empty = false;
 		positionStatus.position = 0;
@@ -25,7 +25,7 @@ public class AutoParkImpl implements IAutoPark {
 	
 	public AutoParkImpl(int position, boolean empty){
 		street = new int[500];
-		isParked = false;
+		//isParked = false;
 		useSensors = true;
 		positionStatus.empty = empty;
 		positionStatus.position = position-1;
@@ -33,7 +33,7 @@ public class AutoParkImpl implements IAutoPark {
 	
 	public PositionStatus moveForward(){
 		
-		if(isParked == false){
+		if(positionStatus.parked == false){
 			if(useSensors == true){
 				street[positionStatus.position+1] = isEmpty(sensorFront, sensorBack);
 			}
@@ -97,7 +97,7 @@ public class AutoParkImpl implements IAutoPark {
 
 	public PositionStatus moveBackward(){
 		
-		if(isParked == false){
+		if(positionStatus.parked == false){
 			if(useSensors == true){
 			street[positionStatus.position-1] = isEmpty(sensorFront, sensorBack);
 			}
@@ -111,18 +111,18 @@ public class AutoParkImpl implements IAutoPark {
 
 	public void park(){
 		
-		if(isParked == false){
+		if(positionStatus.parked == false){
 			if(positionStatus.empty == true){
 				reverse();
-				isParked = true;
-			}else if(isParked == false){
-				while(positionStatus.position<499 && isParked == false){
+				positionStatus.parked = true;
+			}else if(positionStatus.parked == false){
+				while(positionStatus.position<499 && positionStatus.parked == false){
 					if(moveForward().empty == true){
 						reverse();
-						isParked = true;
+						positionStatus.parked = true;
 					}
 				}
-				if(isParked == false){
+				if(positionStatus.parked == false){
 					System.err.print("There are no possible places to park.");
 				}
 			}
@@ -133,8 +133,8 @@ public class AutoParkImpl implements IAutoPark {
 
 	public void unPark(){
 		
-		if(isParked == true){
-			isParked = false;
+		if(positionStatus.parked == true){
+			positionStatus.parked = false;
 		}else
 			System.err.print("Car is not parked already.");
 	}
@@ -149,6 +149,7 @@ public class AutoParkImpl implements IAutoPark {
 	}
 	
 	class PositionStatus{
+		boolean parked = false;
 		boolean empty = false;
 		int position = 0;
 	}
@@ -214,7 +215,7 @@ public class AutoParkImpl implements IAutoPark {
 	}
 
 	public void setParked(boolean b) {
-		this.isParked = b;
+		this.positionStatus.parked = b;
 		
 	}
 
@@ -227,7 +228,7 @@ public class AutoParkImpl implements IAutoPark {
 	}
 
 	public boolean getParked() {
-		return isParked;
+		return positionStatus.parked;
 	}
 	
 	public void setUseSensors(boolean b){
