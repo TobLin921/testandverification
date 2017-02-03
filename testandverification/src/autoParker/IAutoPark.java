@@ -14,10 +14,10 @@ public interface IAutoPark {
 	Post-Condition: Car is one position in front of where it was before, and there is a value registered in the new position’s index on the street.
 	
 	Test-Cases:
-	Test that the car’s position is incremented on one moveForward call.
-	Test that the car is not able to move past the end of the street.
-	Test that the value of the position’s index in the street is different from what it was before.
-	Test that the car does nothing when it is already parked.
+	testMoveForward() : Test that the car’s position is incremented on one moveForward call.
+	testEndOfStreet() : Test that the car is not able to move past the end of the street.
+	testForwardSensorChange() : Test that the value of the position’s index in the street is different from what it was before.
+	testForwardParked() : Test that the car does nothing when it is already parked.
 	*/
 	
 	public PositionStatus moveForward();
