@@ -3,7 +3,6 @@ package autoParker;
 public class AutoParkImpl implements IAutoPark {
 
 	private int[] street;
-	//private boolean isParked;
 	private boolean useSensors;
 	private PositionStatus positionStatus = new PositionStatus();
 	private TestSensor sensorFront = new TestSensor();
@@ -13,7 +12,6 @@ public class AutoParkImpl implements IAutoPark {
 	
 	public AutoParkImpl(){
 		street = new int[500];
-		//isParked = false;
 		useSensors = true;
 		positionStatus.empty = false;
 		positionStatus.position = 0;
@@ -25,7 +23,6 @@ public class AutoParkImpl implements IAutoPark {
 	
 	public AutoParkImpl(int position, boolean empty){
 		street = new int[500];
-		//isParked = false;
 		useSensors = true;
 		positionStatus.empty = empty;
 		positionStatus.position = position-1;
@@ -123,11 +120,11 @@ public class AutoParkImpl implements IAutoPark {
 					}
 				}
 				if(positionStatus.parked == false){
-					System.err.print("There are no possible places to park.");
+					System.err.print("There are no possible places to park. \n\n");
 				}
 			}
 		}else{
-			System.err.print("Car is already parked.");
+			System.err.print("Car is already parked.\n\n");
 		}
 	}
 
@@ -136,7 +133,7 @@ public class AutoParkImpl implements IAutoPark {
 		if(positionStatus.parked == true){
 			positionStatus.parked = false;
 		}else
-			System.err.print("Car is not parked already.");
+			System.err.print("Car is not parked already.\n\n");
 	}
 	
 	public PositionStatus whereIs(){
