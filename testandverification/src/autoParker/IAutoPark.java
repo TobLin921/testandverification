@@ -14,5 +14,5 @@ public interface IAutoPark {
 	
 	public void unPark();
 	
-	public int whereIs();
+	public PositionStatus whereIs();
 }

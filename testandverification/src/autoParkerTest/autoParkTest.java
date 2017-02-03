@@ -1,9 +1,10 @@
 package autoParkerTest;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import autoParker.AutoParkImpl;
-import junit.framework.Assert;
 
 public class AutoParkTest {
 
@@ -16,7 +17,7 @@ public class AutoParkTest {
 	public void testMoveForward(){
 		AutoParkImpl autoPark = new AutoParkImpl();
 		autoPark.moveForward();
-		Assert.assertEquals(1, autoPark.getPosition());
+		assertEquals(1, autoPark.getPosition());
 	}
 	
 	@Test(expected=ArrayIndexOutOfBoundsException.class)
@@ -33,7 +34,7 @@ public class AutoParkTest {
 		autoPark.setSensorValues(1, readings);
 		autoPark.setSensorValues(2, readings);
 		autoPark.moveForward();
-		Assert.assertNotSame(autoPark.getStreetValue(autoPark.getPosition()), readingBefore);
+		assertNotSame(autoPark.getStreetValue(autoPark.getPosition()), readingBefore);
 	}
 	
 	@Test
@@ -43,7 +44,7 @@ public class AutoParkTest {
 		autoPark.setParked(true);
 		autoPark.moveForward();
 		int positionAfter = autoPark.getPosition();
-		Assert.assertEquals(positionBefore, positionAfter);
+		assertEquals(positionBefore, positionAfter);
 	}
 	
 	/*
@@ -59,7 +60,7 @@ public class AutoParkTest {
 		autoPark.setSensorValues(1, readings);
 		autoPark.setSensorValues(2, readings);
 		autoPark.moveForward();
-		Assert.assertEquals(4, autoPark.getStreetValue(autoPark.getPosition()));
+		assertEquals(4, autoPark.getStreetValue(autoPark.getPosition()));
 	}
 	
 	@Test
@@ -70,7 +71,7 @@ public class AutoParkTest {
 		autoPark.setSensorValues(1, readings);
 		autoPark.setSensorValues(2, readings2);
 		autoPark.moveForward();
-		Assert.assertEquals(3, autoPark.getStreetValue(autoPark.getPosition()));
+		assertEquals(3, autoPark.getStreetValue(autoPark.getPosition()));
 	}
 	
 	@Test
@@ -80,7 +81,7 @@ public class AutoParkTest {
 		autoPark.setSensorValues(1, readings);
 		autoPark.setSensorValues(2, readings);
 		autoPark.moveForward();
-		Assert.assertEquals(-1, autoPark.getStreetValue(autoPark.getPosition()));
+		assertEquals(-1, autoPark.getStreetValue(autoPark.getPosition()));
 	}
 	
 	@Test
@@ -90,7 +91,7 @@ public class AutoParkTest {
 		autoPark.setParked(true);
 		autoPark.moveForward();
 		int readingAfter = autoPark.getStreetValue(autoPark.getPosition());
-		Assert.assertEquals(readingBefore, readingAfter);
+		assertEquals(readingBefore, readingAfter);
 	}
 	
 	/*
@@ -104,7 +105,7 @@ public class AutoParkTest {
 		AutoParkImpl autoPark = new AutoParkImpl();
 		autoPark.setPosition(100);
 		autoPark.moveBackward();
-		Assert.assertEquals(99, autoPark.getPosition());
+		assertEquals(99, autoPark.getPosition());
 	}
 	
 	@Test(expected=ArrayIndexOutOfBoundsException.class)
@@ -122,7 +123,7 @@ public class AutoParkTest {
 		autoPark.setSensorValues(1, readings);
 		autoPark.setSensorValues(2, readings);
 		autoPark.moveBackward();
-		Assert.assertNotSame(autoPark.getStreetValue(autoPark.getPosition()), readingBefore);
+		assertNotSame(autoPark.getStreetValue(autoPark.getPosition()), readingBefore);
 	}
 	
 	@Test
@@ -134,7 +135,7 @@ public class AutoParkTest {
 		autoPark.setParked(true);
 		autoPark.moveBackward();
 		int positionAfter = autoPark.getPosition();
-		Assert.assertEquals(positionBefore, positionAfter);
+		assertEquals(positionBefore, positionAfter);
 	}
 	
 	/*
@@ -154,7 +155,7 @@ public class AutoParkTest {
 		autoPark.setStreetValue(currentPos-3, 10);
 		autoPark.setStreetValue(currentPos-4, 12);
 		autoPark.park();
-		Assert.assertTrue(autoPark.getParked());
+		assertTrue(autoPark.getParked());
 	}
 	
 	@Test
@@ -162,7 +163,7 @@ public class AutoParkTest {
 		AutoParkImpl autoPark = new AutoParkImpl();
 		autoPark.setPosition(50);
 		autoPark.park();
-		Assert.assertFalse(autoPark.getParked());
+		assertFalse(autoPark.getParked());
 	}
 	
 	@Test
@@ -170,14 +171,13 @@ public class AutoParkTest {
 		AutoParkImpl autoPark = new AutoParkImpl();
 		autoPark.setUseSensors(false);
 		autoPark.setPosition(50);
-		int currentPos = autoPark.getPosition();
 		autoPark.setStreetValue(100, 5);
 		autoPark.setStreetValue(101, 7);
 		autoPark.setStreetValue(102, 5);
 		autoPark.setStreetValue(103, 10);
 		autoPark.setStreetValue(104, 12);
 		autoPark.park();
-		Assert.assertTrue(autoPark.getParked());
+		assertTrue(autoPark.getParked());
 	}
 	
 	@Test
@@ -188,7 +188,7 @@ public class AutoParkTest {
 		int positionBefore = autoPark.getPosition();
 		autoPark.park();
 		int positionAfter = autoPark.getPosition();
-		Assert.assertEquals(positionBefore, positionAfter);
+		assertEquals(positionBefore, positionAfter);
 	}
 	
 	@Test
@@ -196,7 +196,7 @@ public class AutoParkTest {
 		AutoParkImpl autoPark = new AutoParkImpl();
 		autoPark.setPosition(2);
 		autoPark.park();
-		Assert.assertFalse(autoPark.getParked());
+		assertFalse(autoPark.getParked());
 	}
 
 	/*
@@ -211,7 +211,7 @@ public class AutoParkTest {
         autoPark.setPosition(100);
         autoPark.setParked(true);
         autoPark.unPark();
-        Assert.assertFalse(autoPark.getParked());
+        assertFalse(autoPark.getParked());
     }
 
     @Test
@@ -220,7 +220,7 @@ public class AutoParkTest {
         autoPark.setPosition(100);
         autoPark.setParked(true);
         autoPark.unPark();
-        Assert.assertEquals(100, autoPark.getPosition());
+        assertEquals(100, autoPark.getPosition());
     }
 
     @Test
@@ -229,8 +229,8 @@ public class AutoParkTest {
         autoPark.setPosition(100);
         autoPark.setParked(false);
         autoPark.unPark();
-        Assert.assertEquals(100, autoPark.getPosition());
-        Assert.assertFalse(autoPark.getParked());
+        assertEquals(100, autoPark.getPosition());
+        assertFalse(autoPark.getParked());
     }
 
     /*
@@ -243,6 +243,6 @@ public class AutoParkTest {
     public void testWhereIs(){
         AutoParkImpl autoPark = new AutoParkImpl();
         autoPark.setPosition(250);
-        Assert.assertEquals(250,autoPark.whereIs());
+        assertEquals(autoPark.getPositionStatus(),autoPark.whereIs());
     }
 }
