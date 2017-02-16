@@ -36,14 +36,21 @@ public class AutoParkImpl implements IAutoPark{
 		street = new int[500];
 		useSensors = true;
 		positionStatus.empty = empty;
-		positionStatus.position = position-1;
+		positionStatus.position = position;
+		sensorFront = sensor1;
+		sensorBack = sensor2;
 	}
 	
-	public PositionStatus moveForward(){
+	public PositionStatus moveForward() throws OffStreetException{
 		
 		if(positionStatus.parked == false){
+			
 			if(useSensors == true){
-				street[positionStatus.position+1] = isEmpty(sensorFront, sensorBack);
+				try{
+					street[positionStatus.position+1] = isEmpty(sensorFront, sensorBack);
+				}catch(ArrayIndexOutOfBoundsException e){
+					throw new OffStreetException();
+				}
 			}
 			positionStatus.position += 1;
 			positionStatus.empty = checkIfEmpty(positionStatus.position);
@@ -105,11 +112,15 @@ public class AutoParkImpl implements IAutoPark{
 		return deviation;
 	}
 
-	public PositionStatus moveBackward(){
+	public PositionStatus moveBackward() throws OffStreetException{
 		
 		if(positionStatus.parked == false){
 			if(useSensors == true){
-			street[positionStatus.position-1] = isEmpty(sensorFront, sensorBack);
+				try{
+					street[positionStatus.position-1] = isEmpty(sensorFront, sensorBack);
+				}catch(ArrayIndexOutOfBoundsException e){
+					throw new OffStreetException();
+				}
 			}
 			positionStatus.position -= 1;
 			positionStatus.empty = checkIfEmpty(positionStatus.position);		
@@ -119,7 +130,7 @@ public class AutoParkImpl implements IAutoPark{
 		}
 	}
 
-	public void park(){
+	public void park() throws OffStreetException{
 		
 		if(positionStatus.parked == false){
 			if(checkIfEmpty(positionStatus.position) == true){
@@ -127,7 +138,8 @@ public class AutoParkImpl implements IAutoPark{
 				positionStatus.parked = true;
 			}else if(positionStatus.parked == false){
 				while(positionStatus.position<499 && positionStatus.parked == false){
-					if(moveForward().empty == true){
+					moveForward();
+					if(positionStatus.empty == true){
 						reverse();
 						positionStatus.parked = true;
 					}
@@ -190,7 +202,7 @@ public class AutoParkImpl implements IAutoPark{
 		if(position <= 4){
 			return false;
 		}else{
-			for(int i=position-1;i>position-6;i--){
+			for(int i=position;i>position-5;i--){
 				if(street[i]>=3){
 					consecutiveEmpty += 1;
 				}
@@ -223,4 +235,16 @@ public class AutoParkImpl implements IAutoPark{
 	public void setUseSensors(boolean b){
 		useSensors = b;
 	}
+	
+	public class OffStreetException extends Exception {
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = -326199579566464032L;
+
+		public OffStreetException() {
+	        super("Movement halted to avoid driving off street.");
+	    }
+	}
+	
 }

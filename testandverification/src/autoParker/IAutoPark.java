@@ -1,5 +1,6 @@
 package autoParker;
 
+import autoParker.AutoParkImpl.OffStreetException;
 import autoParker.AutoParkImpl.PositionStatus;
 
 public interface IAutoPark {
@@ -20,7 +21,7 @@ public interface IAutoPark {
 	testForwardParked() : Test that the car does nothing when it is already parked.
 	*/
 	
-	public PositionStatus moveForward();
+	public PositionStatus moveForward() throws OffStreetException;
 	
 	
 	/*
@@ -58,7 +59,7 @@ public interface IAutoPark {
 	testMoveBackwardParked() : Test that the car does nothing when it is already parked.
 	*/
 	
-	public PositionStatus moveBackward();
+	public PositionStatus moveBackward() throws OffStreetException;
 	
 	
 	/*
@@ -78,7 +79,7 @@ public interface IAutoPark {
 	testParkWhenUnderFour() : Test that the car does not find a spot without crashing when positioned on 4 or under.
 	*/
 	
-	public void park();
+	public void park() throws OffStreetException;
 	
 	
 	/*
