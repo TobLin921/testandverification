@@ -1,12 +1,12 @@
 package autoParker;
 
-public class AutoParkImpl implements IAutoPark {
+public class AutoParkImpl implements IAutoPark{
 
 	private int[] street;
 	private boolean useSensors;
 	private PositionStatus positionStatus = new PositionStatus();
-	private TestSensor sensorFront = new TestSensor();
-	private TestSensor sensorBack = new TestSensor();
+	private ISensor sensorFront;
+	private ISensor sensorBack;
 	private final int ACCEPTABLE_DEVIATION = 5;
 	
 	
@@ -16,12 +16,23 @@ public class AutoParkImpl implements IAutoPark {
 		positionStatus.empty = false;
 		positionStatus.position = 0;
 		int[] defaultValues = {0, 0, 0, 0, 0};
-		sensorFront.prepare(defaultValues);
-		sensorBack.prepare(defaultValues);
-		
+		sensorFront = new TestSensor();
+		((TestSensor) sensorFront).prepare(defaultValues);
+		sensorBack = new TestSensor();
+		((TestSensor) sensorBack).prepare(defaultValues);
 	}
 	
-	public AutoParkImpl(int position, boolean empty){
+	public AutoParkImpl(ISensor sensor1, ISensor sensor2){
+		street = new int[500];
+		useSensors = true;
+		positionStatus.empty = false;
+		positionStatus.position = 0;
+		sensorFront = sensor1;
+		sensorBack = sensor2;
+	}
+	
+	
+	public AutoParkImpl(int position, boolean empty, ISensor sensor1, ISensor sensor2){
 		street = new int[500];
 		useSensors = true;
 		positionStatus.empty = empty;
@@ -55,10 +66,12 @@ public class AutoParkImpl implements IAutoPark {
 		System.arraycopy( sensorReadings2, 0, combinedReadings, sensorReadings1.length, sensorReadings2.length );
 		
 		
-		if(getDeviation(sensorReadings1) > ACCEPTABLE_DEVIATION  && 
-				getDeviation(sensorReadings2) <= ACCEPTABLE_DEVIATION){
+		if(getAverage(sensorReadings1) == -1 ||
+			getDeviation(sensorReadings1) > ACCEPTABLE_DEVIATION  && 
+			getDeviation(sensorReadings2) <= ACCEPTABLE_DEVIATION){
 			return getAverage(sensorReadings2);
-		}else if(getDeviation(sensorReadings1) <= ACCEPTABLE_DEVIATION && 
+		}else if(getAverage(sensorReadings2) == -1 ||
+				getDeviation(sensorReadings1) <= ACCEPTABLE_DEVIATION && 
 				getDeviation(sensorReadings2) > ACCEPTABLE_DEVIATION){
 			return getAverage(sensorReadings1);
 		}else if(getDeviation(sensorReadings1) <= ACCEPTABLE_DEVIATION && 
@@ -109,7 +122,7 @@ public class AutoParkImpl implements IAutoPark {
 	public void park(){
 		
 		if(positionStatus.parked == false){
-			if(positionStatus.empty == true){
+			if(checkIfEmpty(positionStatus.position) == true){
 				reverse();
 				positionStatus.parked = true;
 			}else if(positionStatus.parked == false){
@@ -150,33 +163,12 @@ public class AutoParkImpl implements IAutoPark {
 		boolean empty = false;
 		int position = 0;
 	}
-	
-	class TestSensor implements ISensor{
-		
-		int[] sensorReadings = {0, 0, 0, 0, 0};
-		int i = 0;
-		
-		public void prepare(int[] sensorReadings){
-			i = 0;
-			this.sensorReadings = sensorReadings;
-		}
-		
-		public int record(){
-			int tmp = sensorReadings[i];
-			if(i <= 3){
-				i++;
-			}else{
-				i = 0;
-			}
-			return tmp;
-		}
-	}
 
 	public void setSensorValues(int sensor, int[] sensorValues){
 		if(sensor == 1){
-			sensorFront.prepare(sensorValues);
+			((TestSensor) sensorFront).prepare(sensorValues);
 		}else if(sensor == 2){
-			sensorBack.prepare(sensorValues);
+			((TestSensor) sensorBack).prepare(sensorValues);
 		}
 	}
 	

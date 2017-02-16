@@ -1,10 +1,17 @@
 package autoParkerTest;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Stack;
 
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import autoParker.AutoParkImpl;
+import autoParker.ISensor;
+import autoParker.TestSensor;
 
 public class AutoParkTest {
 
@@ -22,7 +29,8 @@ public class AutoParkTest {
 	
 	@Test(expected=ArrayIndexOutOfBoundsException.class)
 	public void testEndofStreet(){
-		AutoParkImpl autoPark = new AutoParkImpl(500, false);
+		TestSensor testSensor = new TestSensor();
+		AutoParkImpl autoPark = new AutoParkImpl(500, false, testSensor, testSensor);
 		autoPark.moveForward();		
 	}
 	
@@ -147,13 +155,13 @@ public class AutoParkTest {
 	@Test
 	public void testParkWithSpot(){
 		AutoParkImpl autoPark = new AutoParkImpl();
-		autoPark.setPosition(50);
+		autoPark.setPosition(49);
 		int currentPos = autoPark.getPosition();
-		autoPark.setStreetValue(currentPos, 5);
-		autoPark.setStreetValue(currentPos-1, 7);
-		autoPark.setStreetValue(currentPos-2, 5);
-		autoPark.setStreetValue(currentPos-3, 10);
-		autoPark.setStreetValue(currentPos-4, 12);
+		autoPark.setStreetValue(50, 5);
+		autoPark.setStreetValue(49, 7);
+		autoPark.setStreetValue(48, 5);
+		autoPark.setStreetValue(47, 10);
+		autoPark.setStreetValue(46, 12);
 		autoPark.park();
 		assertTrue(autoPark.getParked());
 	}
@@ -215,7 +223,7 @@ public class AutoParkTest {
     }
 
     @Test
-    public void testUnParkPersistantPos(){  //CHECK ME!
+    public void testUnParkPersistantPos(){
         AutoParkImpl autoPark = new AutoParkImpl();
         autoPark.setPosition(100);
         autoPark.setParked(true);
@@ -245,4 +253,69 @@ public class AutoParkTest {
         autoPark.setPosition(250);
         assertEquals(autoPark.getPositionStatus(),autoPark.whereIs());
     }
+    
+    /*
+	 * --------------------------------------------------
+	 * Mock
+	 * --------------------------------------------------
+	 */
+
+    class StackAnswer<T> implements Answer<T>{
+    	private Stack<T> stack = new Stack<T>();
+		StackAnswer(Stack<T> stack){
+    		this.stack = stack;
+    	}
+		
+		public T answer(InvocationOnMock inv){
+    		return stack.pop();
+    	}
+    }
+    
+    @Test
+    public void mockTest(){
+    	ISensor mockSensor = mock(ISensor.class);
+    	Stack<Integer> dists = new Stack<Integer>();
+    	for(int i=0;i<10;i++){
+    		dists.push(-1);
+    	}
+    	for(int i=0;i<40;i++){
+    		dists.push(2);
+    	}
+    	for(int i=0;i<25;i++){
+    		dists.push(6);
+    	}
+    	for(int i=0;i<2420;i++){
+    		dists.push(2);
+    	}
+    	
+    	ISensor mockBrokenSensor = mock(ISensor.class);
+    	Stack<Integer> distsBroken = new Stack<Integer>();
+    	for(int i=0;i<10;i++){
+    		distsBroken.push(-1);
+    	}
+    	for(int i=0;i<40;i++){
+    		distsBroken.push(2);
+    	}
+    	for(int i=0;i<25;i++){
+    		distsBroken.push(6);
+    	}
+    	for(int i=0;i<1000;i++){
+    		distsBroken.push(2);
+    	}
+    	for(int i=0;i<1420;i++){
+    		distsBroken.push(-1);
+    	}
+    	
+    	Answer<Integer> answer = new StackAnswer<Integer>(dists);
+    	when(mockSensor.record()).thenAnswer(answer);
+    	
+    	AutoParkImpl autoPark = new AutoParkImpl(mockSensor, mockBrokenSensor);
+    	AutoParkImpl spyAutoPark = spy(autoPark);
+    	
+    	for(int i=0;i<499;i++){
+    		autoPark.moveForward();
+    	}
+    	
+    }
+
 }

@@ -2,5 +2,5 @@ package autoParker;
 
 public interface ISensor {
 	
-	public int record();
+	public Integer record();
 }
