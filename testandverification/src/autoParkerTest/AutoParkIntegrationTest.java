@@ -24,74 +24,74 @@ public class AutoParkIntegrationTest {
 	 * --------------------------------------------------
 	 */
 
-	class StackAnswer<T> implements Answer<T>{
-		private Stack<T> stack = new Stack<T>();
+    class StackAnswer<T> implements Answer<T>{
+    	private Stack<T> stack = new Stack<T>();
 		StackAnswer(Stack<T> stack){
-			this.stack = stack;
-		}
-
+    		this.stack = stack;
+    	}
+		
 		public T answer(InvocationOnMock inv){
-			return stack.pop();
-		}
-	}
+    		return stack.pop();
+    	}
+    }
+  
+    @Test
+    public void integrationTestOne(){
+    	try{
+	    	ISensor mockSensor = mock(ISensor.class);
+	    	Stack<Integer> dists = new Stack<Integer>();
+	    	for(int i=0;i<1420;i++){
+	    		dists.push(2);
+	    	}
+	    	for(int i=0;i<25;i++){
+	    		dists.push(6);
+	    	}
+	    	for(int i=0;i<40;i++){
+	    		dists.push(2);
+	    	}
+	    	for(int i=0;i<10;i++){
+	    		dists.push(-1);
+	    	}
 
-	@Test
-	public void integrationTestOne(){
-		try{
-			ISensor mockSensor = mock(ISensor.class);
-			Stack<Integer> dists = new Stack<Integer>();
-			for(int i=0;i<1420;i++){
-				dists.push(2);
-			}
-			for(int i=0;i<25;i++){
-				dists.push(6);
-			}
-			for(int i=0;i<40;i++){
-				dists.push(2);
-			}
-			for(int i=0;i<10;i++){
-				dists.push(-1);
-			}
 
+	    	ISensor mockBrokenSensor = mock(ISensor.class);
+	    	Stack<Integer> distsBroken = new Stack<Integer>();
+	    	for(int i=0;i<1420;i++){
+	    		distsBroken.push(-1);
+	    	}
+	    	for(int i=0;i<1000;i++){
+	    		distsBroken.push(2);
+	    	}
+	    	for(int i=0;i<25;i++){
+	    		distsBroken.push(6);
+	    	}
+	    	for(int i=0;i<40;i++){
+	    		distsBroken.push(-1);
+	    	}
+	    	for(int i=0;i<10;i++){
+	    		distsBroken.push(-1);
+	    	}
 
-			ISensor mockBrokenSensor = mock(ISensor.class);
-			Stack<Integer> distsBroken = new Stack<Integer>();
-			for(int i=0;i<1420;i++){
-				distsBroken.push(-1);
-			}
-			for(int i=0;i<1000;i++){
-				distsBroken.push(2);
-			}
-			for(int i=0;i<25;i++){
-				distsBroken.push(6);
-			}
-			for(int i=0;i<40;i++){
-				distsBroken.push(-1);
-			}
-			for(int i=0;i<10;i++){
-				distsBroken.push(-1);
-			}
-
-			Answer<Integer> answer = new StackAnswer<Integer>(dists);
+	    	Answer<Integer> answer = new StackAnswer<Integer>(dists);
 			Answer<Integer> answer2 = new StackAnswer<Integer>(distsBroken);
-			when(mockSensor.record()).thenAnswer(answer);
+	    	when(mockSensor.record()).thenAnswer(answer);
 			when(mockBrokenSensor.record()).thenAnswer(answer2);
 
 
 			AutoParkImpl autoPark = new AutoParkImpl(mockSensor, mockBrokenSensor);
-			AutoParkImpl spyAutoPark = spy(autoPark);
+	    	AutoParkImpl spyAutoPark = spy(autoPark);
+	    	
+	    	spyAutoPark.park();
+	    	verify(spyAutoPark, times(15)).moveForward();
+    	}catch(Exception e){
+    		fail("There should be no exceptions in this test");
+    	}
+    	
+    }
 
-			spyAutoPark.park();
-			verify(spyAutoPark, times(15)).moveForward();
-		}catch(Exception e){
-			fail("There should be no exceptions in this test");
-		}
-
-	}
-
-	@Test
+    @Test
 	public void integrationTestTwo(){
-		try{
+    	try{
 			ISensor mockSensor = mock(ISensor.class);
 			Stack<Integer> dists = new Stack<Integer>();
 			for(int i=0;i<2455;i++){
@@ -134,17 +134,17 @@ public class AutoParkIntegrationTest {
 			spyAutoPark.park();
 			spyAutoPark.unPark();
 			spyAutoPark.moveBackward();
-
+			
 
 			verify(spyAutoPark, times(490)).moveForward();
 
 		}
 		catch (Exception e){
-			fail("There should be no exceptions in this test");
+    		fail("There should be no exceptions in this test");
 		}
 
 	}
 
 
-
+	
 }
