@@ -22,7 +22,7 @@ public class AutoParkIntegrationTest {
 	 * --------------------------------------------------
 	 * Mock
 	 * --------------------------------------------------
-	 */
+	 */ 
 
     class StackAnswer<T> implements Answer<T>{
     	private Stack<T> stack = new Stack<T>();
@@ -102,10 +102,10 @@ public class AutoParkIntegrationTest {
 			ISensor mockBrokenSensor = mock(ISensor.class);
 			Stack<Integer> distsBroken = new Stack<Integer>();
 
-			for(int i=0;i<2405;i++){
+			for(int i=0;i<2445;i++){
 				distsBroken.push(2);
 			}
-			for(int i=0;i<55;i++){
+			for(int i=0;i<50;i++){
 				distsBroken.push(-1);
 			}
 

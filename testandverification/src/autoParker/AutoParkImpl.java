@@ -213,7 +213,7 @@ public class AutoParkImpl implements IAutoPark{
 				return false;
 			}
 		}
-	}
+	} 
 
 	public void setParked(boolean b) {
 		this.positionStatus.parked = b;
