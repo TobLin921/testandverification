@@ -26,7 +26,7 @@ public class AutoParkUnitTest {
 		try{
 			AutoParkImpl autoPark = new AutoParkImpl();
 			autoPark.moveForward();
-			assertEquals(1, autoPark.getPosition());	
+			assertEquals(1, autoPark.getPosition());
 		}catch(Exception e){
 			fail("There should be no exceptions in this test");
 		}
